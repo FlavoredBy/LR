@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REMATCH Community - Torneios de Futebol Arcade</title>
+    
+    <!-- Fontes modernas -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --royal-primary: #1E40AF;
+            --royal-deep: #0F172A;
+            --royal-light: #3B82F6;
+            --gold-primary: #F59E0B;
+            --gold-light: #FCD34D;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --dark-bg: #020617;
+            --accent-gradient: linear-gradient(135deg, var(--royal-light), var(--gold-primary));
+            --text-primary: #F8FAFC;
+            --text-secondary: #CBD5E1;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html { scroll-behavior: smooth; }
+        
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ===== GLASSMORPHISM UTILITIES ===== */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+        }
+
+        .glass-card {
+            background: rgba(30, 64, 175, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 20px;
+            transition: all 0.4s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--gold-primary);
+            box-shadow: 0 25px 50px rgba(59, 130, 246, 0.3);
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(245, 158, 11, 0.8); }
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* ===== HEADER FUTURÍSTICO ===== */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1rem 0;
+            background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--gold-light);
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .nav-discord {
+            background: var(--accent-gradient);
+            color: white !important;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            animation: glow 2s infinite;
+        }
+
+        /* ===== HERO ULTRAMODERNO ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: radial-gradient(ellipse at center, var(--royal-primary) 0%, var(--dark-bg) 70%);
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23F59E0B" fill-opacity="0.05"><circle cx="5" cy="5" r="2"/></g></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 900px;
+            padding: 2rem;
+            z-index: 10;
+            animation: slideInLeft 1s ease-out;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--accent-gradient);
+            color: white;
+            padding: 1.2rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.4s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(245, 158, 11, 0.4);
+        }
+
+        /* ===== SEÇÕES MODERNAS ===== */
+        .section {
+            padding: 6rem 0;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+
+        .section-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 4rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+
+        /* ===== GRID MODERNO DE TORNEIOS ===== */
+        .tournaments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .tournament-card {
+            padding: 2.5rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tournament-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--accent-gradient);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .tournament-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .tournament-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .tournament-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .tournament-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            background: var(--accent-gradient);
+            color: white;
+            animation: glow 3s infinite;
+        }
+
+        .tournament-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .tournament-detail {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .tournament-icon {
+            font-size: 1.5rem;
+        }
+
+        /* ===== GRID DE PREMIAÇÕES ===== */
+        .prizes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .prize-card {
+            text-align: center;
+            padding: 2.5rem 1.5rem;
+            transition: all 0.4s ease;
+            animation: slideInRight 0.8s ease-out;
+        }
+
+        .prize-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .prize-position {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .prize-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ===== STATS MODERNOS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+            transition: all 0.4s ease;
+        }
+
+        .stat-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        /* ===== FOOTER FUTURÍSTICO ===== */
+        .footer {
+            background: var(--royal-deep);
+            padding: 4rem 0 2rem;
+            border-top: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-brand h3 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--gold-light);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(59, 130, 246, 0.1);
+            color: var(--text-secondary);
+        }
+
+        /* ===== RESPONSIVO ===== */
+        @media (max-width: 768px) {
+            .nav-menu { display: none; }
+            .hero-content { padding: 1rem; }
+            .section { padding: 4rem 1rem; }
+            .tournaments-grid,
+            .prizes-grid,
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== CURSOR CUSTOMIZADO ===== */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gold-primary);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.1s ease;
+            transform: translate(-50%, -50%);
+        }
+
+        .cursor-follower {
+            width: 8px;
+            height: 8px;
+            background: var(--gold-primary);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transition: all 0.3s ease;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <!-- Cursor customizado -->
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">LEAGUE REMATCH</div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#torneios" class="nav-link">Torneios</a></li>
+                <li><a href="#premiacoes" class="nav-link">Premiações</a></li>
+                <li><a href="https://discord.gg/LeagueRematch" target="_blank" class="nav-link nav-discord">DISCORD</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">LEAGUE REMATCH</h1>
+            <p class="hero-subtitle">Torneios de Futebol</p>
+            <p class="hero-description">
+                Bem-vindo ao LEAGUE REMATCH! Competitivo, o servidor oficial do Discord para campeonatos profissionais de REMATCH! Aqui, a paixão pelo futebol virtual se transforma em competições sérias com prêmios em dinheiro de verdade.
+            </p>
+            <a href="https://discord.gg/LeagueRematch" class="cta-button">
+                <span>🎮</span>
+                ENTRAR NO DISCORD
+            </a>
+        </div>
+    </section>
+
+    <!-- Torneios -->
+    <section id="torneios" class="section">
+        <h2 class="section-title">Torneios Semanais</h2>
+        <div class="tournaments-grid">
+            <div class="tournament-card glass-card">
+                <div class="tournament-header">
+                    <h3 class="tournament-title">LR x WOLFZ</h3>
+                    <span class="tournament-status">ABERTO</span>
+                </div>
+                <div class="tournament-info">
+                    <div class="tournament-detail">
+                        <span class="tournament-icon">⚽</span>
+                        <span>5v5 Intenso</span>
+                    </div>
+                    <div class="tournament-detail">
+                        <span class="tournament-icon">📅</span>
+                        <span>04/05/2025</span>
+                    </div>
+                    <div class="tournament-detail">
+                        <span class="tournament-icon">ℹ️</span>
+                        <span>16 Equipes</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tournament-card glass-card">
+                <div class="tournament-header">
+                    <h3 class="tournament-title">Open Field</h3>
+                    <span class="tournament-status">FECHADO</span>
+                </div>
+                <div class="tournament-info">
+                    <div class="tournament-detail">
+                        <span class="tournament-icon">🏆</span>
+                        <span>A DEFINIR</span>
+                    </div>
+                    <div class="tournament-detail">
+                        <span class="tournament-icon">📅</span>
+                        <span>A DEFINIR</span>
+                    </div>
+                    <div class="tournament-detail">
+                        <span class="tournament-icon">ℹ️</span>
+                        <span>A DEFINIR</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tournament-card glass-card">
+                <div class="tournament-header">
+                    <h3 class="tournament-title">Rookie League</h3>
+                    <span class="tournament-status">FECHADO</span>
+                </div>
+                <div class="tournament-info">
+                    <div class="tournament-detail">
+                        <span class="tournament-icon">🌟</span>
+                        <span>A DEFINIR</span>
+                    </div>
+                    <div class="tournament-detail">
+                        <span class="tournament-icon">📅</span>
+                        <span>A DEFINIR</span>
+                    </div>
+                    <div class="tournament-detail">
+                        <span class="tournament-icon">ℹ️</span>
+                        <span>A DEFINIR</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Premiações -->
+    <section id="premiacoes" class="section">
+        <h2 class="section-title">Premiações</h2>
+        <div class="prizes-grid">
+            <div class="prize-card glass-card">
+                <span class="prize-icon">👑</span>
+                <div class="prize-position">CAMPEÃO</div>
+                <div class="prize-amount">VALOR DO PRIZEPOOL</div>
+            </div>
+            <div class="prize-card glass-card">
+                <span class="prize-icon">🥈</span>
+                <div class="prize-position">VICE</div>
+                <div class="prize-amount">VAGA NO PRÓXIMO CAMPEONATO</div>
+            </div>
+            <div class="prize-card glass-card">
+                <span class="prize-icon">🏅</span>
+                <div class="prize-position">PREMIAÇÃO INDIVIDUAL</div>
+                <div class="prize-amount">OS MELHORES DE CADA POSIÇÃO</div>
+            </div>
+            <div class="prize-card glass-card">
+                <span class="prize-icon">🎮</span>
+                <div class="prize-position">PARTICIPAÇÃO</div>
+                <div class="prize-amount">BRINDES</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comunidade -->
+    <section class="section">
+        <h2 class="section-title">Nossa Comunidade</h2>
+        <div class="stats-grid">
+            <div class="stat-card glass-card">
+                <span class="stat-number" data-count="6400+">6400+</span>
+                <div class="stat-label">Jogadores Ativos</div>
+            </div>
+            <div class="stat-card glass-card">
+                <span class="stat-number" data-count="25">R$1,000.0</span>
+                <div class="stat-label">Premiação Distribuída Até Agora</div>
+            </div>
+            <div class="stat-card glass-card">
+                <span class="stat-number" data-count="70+">70+</span>
+                <div class="stat-label">Times Registrados</div>
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <a href="https://discord.gg/LeagueRematch" class="cta-button">
+                <span>💬</span>
+                JUNTAR-SE AGORA
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <h3>LEAGUE REMATCH</h3>
+                <p>Uma das maiores comunidades brasileira de torneios de REMATCH no mundo.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Links</h4>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#torneios">Torneios</a></li>
+                    <li><a href="#premiacoes">Premiações</a></li>
+                    <li><a href="https://discord.gg/LeagueRematch">Discord</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Comunidade</h4>
+                <ul>
+                    <li><a href="https://discord.gg/LeagueRematch">Discord Oficial</a></li>
+                    <li><a href="#">Regras</a></li>
+                    <li><a href="#">Suporte</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 LEAGUE REMATCH. Feito para jogadores, por jogadores.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Cursor customizado
+        const cursor = document.querySelector('.cursor');
+        const cursorFollower = document.querySelector('.cursor-follower');
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            
+            setTimeout(() => {
+                cursorFollower.style.left = e.clientX + 'px';
+                cursorFollower.style.top = e.clientY + 'px';
+            }, 100);
+        });
+
+        // Animação dos contadores
+        const counters = document.querySelectorAll('[data-count]');
+        const animateCounters = () => {
+            counters.forEach(counter => {
+                const target = parseInt(counter.dataset.count);
+                const current = parseInt(counter.textContent);
+                const increment = target / 200;
+                
+                if (current < target) {
+                    counter.textContent = Math.ceil(current + increment);
+                    setTimeout(animateCounters, 10);
+                }
+            });
+        };
+
+        // Observer para animações
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                    if (entry.target.querySelector('[data-count]')) {
+                        animateCounters();
+                    }
+                }
+            });
+        });
+
+        // Observar elementos animados
+        document.querySelectorAll('.glass-card, .stat-card').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Scroll suave para navegação
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Hover effects para cards
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>
